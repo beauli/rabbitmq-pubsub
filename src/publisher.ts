@@ -22,9 +22,12 @@ export class RabbitMqPublisher {
                     .then(() => {
                         return Promise.resolve(channel.publish(queueConfig.dlx, '', this.getMessageBuffer(message))).then(() => {
                             this.logger.trace("message sent to exchange '%s' (%j)", queueConfig.dlx, message)
+                        }).finally(() => {
+                            channel.close()
                         });
                     }).catch(() => {
-                         this.logger.error("unable to send message to exchange '%j' {%j}", queueConfig.dlx, message)
+                        this.logger.error("unable to send message to exchange '%j' {%j}", queueConfig.dlx, message)
+                        channel.close()
                         return Promise.reject(new Error("Unable to send message"))
                     })
             });

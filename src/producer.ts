@@ -23,7 +23,7 @@ export class RabbitMqProducer {
           }
 
           this.logger.trace("message sent to queue '%s' (%j)", queueConfig.name, message)
-        });
+        }).finally(() => { channel.close() });
       });
   }
 
